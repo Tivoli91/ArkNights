@@ -7,7 +7,7 @@ $env:Path.split(';') | %{
 		$found_android_debug=$true
 	}
 }
-If( !$found_lanuch -or $found_android_debug){
+If( !$found_lanuch -or !$found_android_debug){
 	If(!$found_lanuch  ){
 		write-warning "Please add the full path of MUMU simulator `"NemuPlayer.exe`" to environment path before using this module."
 	}
