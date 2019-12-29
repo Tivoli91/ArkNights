@@ -102,10 +102,10 @@ Function Start-ANTaskLoopWithReasonCheck(){
 	$previous_loop_cnt=0
 	# 开始循环刷关
 	If( $loop_cnt -ge $times ){ # 现有理智可以刷的次数>=目标次数，使用目标次数作为循环次数,不需要喝药剂/吃石头
-		Start-ANTaskLoop 1 $times 150 #$level_x $level_y
+		Start-ANTaskLoop 1 $times 150
 	}else{
 		Do{
-			Start-ANTaskLoop ($previous_loop_cnt + 1) ($previous_loop_cnt + $loop_cnt) 150 #$level_x $level_y
+			Start-ANTaskLoop ($previous_loop_cnt + 1) ($previous_loop_cnt + $loop_cnt) 150
 			$previous_loop_cnt = $loop_cnt
 			If( ($total_loop_cnt+=$loop_cnt) -ge $times ){ break}
 			# 此时理智用完

@@ -8,13 +8,14 @@
 	- anh.traineddata 针对招聘干员汉字的识别
 	- anhn.traineddata 针对招聘干员 招聘许可数量数字的识别
 	- ans.traineddata 针对基建 收取资源/信赖值/订单 等汉字的识别
-3. [OCRUtility](https://gitee.com/chaoyuew/powershell/tree/master/Modules/MyDeveloppedModule/OCRUtility)模块,针对Tesseract的一些调用和其他图像处理的封装
+3. [OCRUtility](https://github.com/Tivoli91/OCRUtility)模块,针对Tesseract的一些调用和其他图像处理的封装
 4. 由于涉及OCR和点击操作, 目前只适配了**模拟器自身**1080(1920x1080)和2K(2560x1440)分辨率下的操作.
 5. 基于Win10 64位 PowerShell 5.1.18362.145 开发, 未在低版本Windows和低版本PowerShell上测试,不保证低版本稳定性.
 
 基本功能已经实现,但是还是有很多缺陷,个人觉得应该不算外挂,且用且珍惜,目前还在更新新的功能中...
 
 UPDATE
+- 12/29/2019--更改关卡完场后继续下一次的点击位置
 - 12/28/2019--修复模拟器判断bug
 - 12/26/2019--优化招聘干员时，判断招聘许可数量的逻辑, 增加判断木木模拟器启动程序以及其自带安卓测试桥程序是否在系统环境变量里面
 - 12/21/2019--补全芯片关卡一周每天对应活动关卡，抽取补充理智函数

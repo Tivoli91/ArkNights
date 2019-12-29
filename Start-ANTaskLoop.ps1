@@ -3,8 +3,8 @@ Function Start-ANTaskLoop(){
 	    [int]$start_cnt=1,
 	    [int]$end_cnt,
 	    [int]$sleep,
-	    [int]$ignore_x=1500,
-	    [int]$ignore_y=500
+	    [int]$ignore_x=$Global:ANXML.ArkNights.combat.ignorelevelup.$Global:ANR.x,
+	    [int]$ignore_y=$Global:ANXML.ArkNights.combat.ignorelevelup.$Global:ANR.y
 	)
     $x,$y=$Global:ANXML.ArkNights.combat.start.$Global:ANR.x,$Global:ANXML.ArkNights.combat.start.$Global:ANR.y
 	$start_cnt .. $end_cnt|%{
