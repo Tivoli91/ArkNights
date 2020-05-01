@@ -13,6 +13,7 @@
 4. 由于涉及OCR和点击操作, 目前只适配了**模拟器自身**1080(1920x1080)和2K(2560x1440)分辨率下的操作.
 5. 基于Win10 64位 PowerShell 5.1.18362.145 开发, 未在低版本**Windows/PowerShell/MuMu模拟器/Tesseract**上测试,不保证低版本稳定性.
 6. 参考[解决WindowsPowerShell中文显示问号及乱码问题](https://blog.csdn.net/weixin_43426860/article/details/83348284)
+
 基本功能已经实现,但是还是有很多缺陷,个人觉得应该不算外挂,且用且珍惜,目前还在更新新的功能中...
 
 UPDATE
