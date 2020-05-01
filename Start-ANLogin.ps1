@@ -1,5 +1,11 @@
-Function Start-ANLogin(){
-	# get and encrypt password
+Function Start-ANLogin([switch]$SkipLoginPageCheck){
+	If( !$SkipLoginPageCheck ){
+		If( !(Test-ANLoginPage) ){
+			throw "Not in login main page!"
+		}
+	}
+	
+	# 读取本地加密密码
 	If( [string]::IsNullOrWhiteSpace( ($cred=cat "$PSScriptRoot\cred" -raw -ea 4) )){
 		$sec = Read-Host "Please enter your ArkNights password, it will be encrypted in `"$PSScriptRoot\cred`"" -AsSecureString
 		If( $sec.Length -eq 0 -or !$sec ){
@@ -14,9 +20,8 @@ Function Start-ANLogin(){
 		}
 	}
 	
-	New-ANScreenShot
 	If( Test-ANWordExist $Global:ANXML.ArkNights.login.check.$Global:ANR.x $Global:ANXML.ArkNights.login.check.$Global:ANR.y $Global:ANXML.ArkNights.login.check.$Global:ANR.w $Global:ANXML.ArkNights.login.check.$Global:ANR.h 'chi_sim' '36134214953164929702' ){
-		adb_server shell input tap $Global:ANXML.ArkNights.login.accountmannage.$Global:ANR.x $Global:ANXML.ArkNights.login.accountmannage.$Global:ANR.y ; sleep 2 # 账号管理
+		adb_server shell input tap $Global:ANXML.ArkNights.login.accountmanage.$Global:ANR.x $Global:ANXML.ArkNights.login.accountmanage.$Global:ANR.y ; sleep 2 # 账号管理
 	}
 	adb_server shell input tap $Global:ANXML.ArkNights.login.accountlogin.$Global:ANR.x $Global:ANXML.ArkNights.login.accountlogin.$Global:ANR.y     ; sleep 2 # 账号登录
 	adb_server shell input tap $Global:ANXML.ArkNights.login.password.$Global:ANR.x $Global:ANXML.ArkNights.login.password.$Global:ANR.y             ; sleep 2 # 密码输入框

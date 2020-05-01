@@ -6,13 +6,19 @@ $env:Path.split(';') | %{
 	If( test-path "$_\adb_server.exe" ){
 		$found_android_debug=$true
 	}
+	If( test-path "$_\tesseract.exe" ){
+		$found_tesseract=$true
+	}
 }
-If( !$found_lanuch -or !$found_android_debug){
+If( !$found_lanuch -or !$found_android_debug -or !$found_tesseract){
 	If(!$found_lanuch  ){
-		write-warning "Please add the full path of MUMU simulator `"NemuPlayer.exe`" to environment path before using this module."
+		write-warning "Please add the full FOLDER path where MUMU simulator `"NemuPlayer.exe`" is in to environment path before using this module."
 	}
 	If(!$found_android_debug ){
-		write-warning "Please add the full path of MUMU simulator `"adb_server.exe`" to environment path before using this module."
+		write-warning "Please add the full FOLDER path where android debug tool `"adb_server.exe`" is in to environment path before using this module."
+	}
+	If(!$found_tesseract ){
+		write-warning "Please add the full FOLDER path where tesseract tool `"tesseract.exe`" is in to environment path before using this module."
 	}
 	return
 }
@@ -47,6 +53,13 @@ Function Test-ANWordExist(){
 	)
 	New-CropImage $to_left_distance $to_top_distance $image_width $image_height $source_image "$($env:TEMP)\ocr1.jpg"
 	return (Test-OCRWord "$($env:TEMP)\ocr1.jpg" $training_data $check_data) 
+}
+Function Test-ANLoginPage(){
+    New-ANScreenShot
+	If( Test-ANWordExist $Global:ANXML.ArkNights.login.mainpage.$Global:ANR.x $Global:ANXML.ArkNights.login.mainpage.$Global:ANR.y $Global:ANXML.ArkNights.login.mainpage.$Global:ANR.w $Global:ANXML.ArkNights.login.mainpage.$Global:ANR.h 'chi_sim' '29992251432132735758' ){ # 查看公告
+		return $true
+	}
+	return $false
 }
 Function Enter-ANCombatPage(){
     # 1 <-------------------------- 尝试进入作战界面

@@ -9,6 +9,9 @@ Function Start-ANFriendVisit(){
 		$Global:ANXML.save("$PSScriptRoot\ArkNightsConfig.xml")
 		$Global:ANXML = [xml](cat "$PSScriptRoot\ArkNightsConfig.xml" -Encoding UTF8)
 	}
+	If( !$an_friends_count ){ # 尝试从XML文件获取好于个数
+		$an_friends_count = $Global:ANXML.ArkNights.friends.amount.number
+	}
 	If( !$AlreadyInFriendsPage ){
 		If( ! (Test-ANHomePage ) ){ # 不在首页
 			$word = Switch($Global:ANR){
@@ -29,10 +32,10 @@ Function Start-ANFriendVisit(){
 		}
 	}
 	
+	write-host "Starting to visit $an_friends_count friends"
 	adb_server shell input tap 200 380  ; sleep 2 # 点击好友列表
 	
 	If( !$an_friends_count ){ # 尝试从XML文件获取好于个数
-		$an_friends_count = $Global:ANXML.ArkNights.friends.amount.number
 		If( [string]::IsNullOrWhiteSpace($an_friends_count ) ){ # 未从XML获取到，使用OCR获取
 			Get-ANPartScreenshot $Global:ANXML.ArkNights.friends.amount.$Global:ANR.x $Global:ANXML.ArkNights.friends.amount.$Global:ANR.y $Global:ANXML.ArkNights.friends.amount.$Global:ANR.w $Global:ANXML.ArkNights.friends.amount.$Global:ANR.h # 截取 "好友"人数数字
 			Test-OCRWord "$($env:TEMP)\ocr.jpg" 'anhn' '123456'|out-null #  使用OCR 获取好友个数数字

@@ -1,8 +1,11 @@
-Function Test-ANHomePage(){
+Function Test-ANHomePage($image){
     # 使用OCR检测固定区域文本判断是不是在首页
 	Try{
-		Get-ANPartScreenshot $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.x $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.y $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.w $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.h -new_img_file "$($env:TEMP)\ocr1.jpg" # 截取模拟器部分屏幕
-		return (Test-OCRWord "$($env:TEMP)\ocr1.jpg" 'chi_sim' '3253438431')  # 编队
+		If( [string]::IsNullOrWhiteSpace($image ) -or !(test-path $image)){
+			Get-ANPartScreenshot $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.x $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.y $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.w $Global:ANXML.ArkNights.homepagecheck.$Global:ANR.h -new_img_file "$($env:TEMP)\ocr1.jpg" # 截取模拟器部分屏幕
+			$image = "$($env:TEMP)\ocr1.jpg"
+		}
+		return (Test-OCRWord $image 'chi_sim' '3253438431')  # 编队
 	}Catch{
 		throw $_
 	}

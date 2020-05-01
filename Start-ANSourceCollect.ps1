@@ -1,6 +1,8 @@
 Function Start-ANSourceCollect([switch]$AlreadyInBasePage,[switch]$UseDrone){
 	Function Test-ANOrderExist(){
-	    return (Test-ANWordExist $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.x $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.y $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.w $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.h 'chi_sim' '3574621333201322018412') -or (Test-ANWordExist $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.x $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.y $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.w $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.h 'chi_sim' '3574621333201322018412') #-or (Test-ANWordExist 1115 50 190 50 'chi_sim' '3574621333201322018412')
+	    $o1_exsit=Test-ANWordExist $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.x $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.y $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.w $Global:ANXML.ArkNights.base.rect.order.o1.$Global:ANR.h 'chi_sim' '3574621333201322018412'
+	    $o2_exsit=Test-ANWordExist $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.x $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.y $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.w $Global:ANXML.ArkNights.base.rect.order.o2.$Global:ANR.h 'chi_sim' '3574621333201322018412'
+		return ($o1_exsit -or $o2_exsit) #-or (Test-ANWordExist 1115 50 190 50 'chi_sim' '3574621333201322018412')
 	}
 	Function Test-ANSourceExist([int]$n){
 	    return (Test-ANWordExist $Global:ANXML.ArkNights.base.rect.source."s$n".$Global:ANR.x $Global:ANXML.ArkNights.base.rect.source."s$n".$Global:ANR.y $Global:ANXML.ArkNights.base.rect.source."s$n".$Global:ANR.w $Global:ANXML.ArkNights.base.rect.source."s$n".$Global:ANR.h)
@@ -21,34 +23,35 @@ Function Start-ANSourceCollect([switch]$AlreadyInBasePage,[switch]$UseDrone){
 	
 	# 截取模拟器部分屏幕
 	Get-ANPartScreenshot $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.x $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.y $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.w $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.h 
-	# 4 <------------------------- 所以我们要检测下 在点击右上角位置后 是否左下角3个图标都没有"点击全部收获"的文字,目前没看到有第四个的,
+	
+	$found_collect_all=$false
+	
+
+	# 4 <----- 所以我们要检测下 在点击右上角位置后,是否左下角3个图标都没有"点击全部收获"的文字,目前没看到有第四个的
 	If( ($s1 =Test-ANSourceExist 1) -or ($s2 =Test-ANSourceExist 2) -or ($s3 =Test-ANSourceExist 3) ){
-		# <------------------------- 在发现有资源可收获的情况下查看是否有订单交付
-		$order=Test-ANOrderExist
+		$found_collect_all=$true
 	}else{
 		<#  
 			4.1 <------------------------- 当发现3个图标都没有收集的文字
-			那么可能有2种情况
-			1. 没有物资可以收集, 我们要检测下是否有订单可以收集,如果没有订单, 那么
-			2. 可能第3步点击的图标是"警告"的图标, 我们需要再点击一下"警告"的图标下面的"小铃铛"图标
+			可能第3步点击的图标是"警告"的图标, 我们需要再点击一下"警告"的图标下面的"小铃铛"图标
 		#>
-		# 4.2 <------------------------- 检测下是否有订单可以收集 # 检测 "订单交付" 字段
-		If( $order=Test-ANOrderExist ){ 
-		}else{
-			# 4.3 没有订单, 猜测上次点的是"警告"的图标, 尝试点击下面的"小铃铛"图标
-			adb_server shell input tap $Global:ANXML.ArkNights.base.notice.second.$Global:ANR.x $Global:ANXML.ArkNights.base.notice.second.$Global:ANR.y ; sleep 1 # 点之后依旧检测左下角 "点击全部收取" 汉字
-			Get-ANPartScreenshot $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.x $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.y $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.w $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.h 
-			If( ($s1 =Test-ANSourceExist 1) -or ($s2 =Test-ANSourceExist 2) -or ($s3 =Test-ANSourceExist 3) ){
-				# <------------------------- 在发现有资源可收获的情况下查看是否有订单交付
-				$order=Test-ANOrderExist
-			}else{
-				# 4.2 <------------------------- 当发现3个图标都没有"点击全部收获"的文字
-				If( ! ($order=Test-ANOrderExist  )){ # 再接着检测 "订单交付" 字段
-					return "No found to be collect source or order" #没有检测到要收集的资源或者订单
-				}
-			}
+
+		# 4.2 尝试点击右上角的"小铃铛"图标
+		adb_server shell input tap $Global:ANXML.ArkNights.base.notice.second.$Global:ANR.x $Global:ANXML.ArkNights.base.notice.second.$Global:ANR.y ; sleep 1 
+		
+		# 4.3 点之后依旧检测左下角 "点击全部收取" 汉字
+		
+		Get-ANPartScreenshot $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.x $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.y $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.w $Global:ANXML.ArkNights.base.rect.main.$Global:ANR.h 
+		If( ($s1 =Test-ANSourceExist 1) -or ($s2 =Test-ANSourceExist 2) -or ($s3 =Test-ANSourceExist 3) ){
+			$found_collect_all=$true
 		}
 	}
+	
+	If(!$found_collect_all  ){
+		# 经过上面检测后，如果没发现 "点击全部收取" 汉字， 则说明没有资源/订单可以收集
+		return "Not found click & collect all!"
+	}
+	
 	# 5 <------------------------- 开始收集物资,根据出现"点击全部收获"字样出现的位置,进行分支选择, $s2 和 $s3 可能因为 $s1为true而不执行
 	If( $s1 ){ # 第一个图标有物资要收集
 		$p = 1 # 第一个图标位置
@@ -72,42 +75,8 @@ Function Start-ANSourceCollect([switch]$AlreadyInBasePage,[switch]$UseDrone){
 			adb_server shell input tap $Global:ANXML.ArkNights.base.rect.clickget."p$p".$Global:ANR.x $Global:ANXML.ArkNights.base.rect.clickget."p$p".$Global:ANR.y ; sleep 2
 		}
 	}
-	If( $order ){
-		# 6 <------------------------- 进入贸易站
-		1..2  | %{ adb_server shell input tap $Global:ANXML.ArkNights.base.order.enter.$Global:ANR.x $Global:ANXML.ArkNights.base.order.enter.$Global:ANR.y ; sleep -Milliseconds 1500 }
-		
-		adb_server shell input tap $Global:ANXML.ArkNights.base.order.list.$Global:ANR.x $Global:ANXML.ArkNights.base.order.list.$Global:ANR.y ; sleep -Milliseconds 2000 # 7 <-------------------------  进入订单列表
-		
-		# 8 <-------------------------  查看订单个数
-		New-ANScreenShot # 截取模拟器截图
-		Test-ANWordExist $Global:ANXML.ArkNights.base.order.amount.$Global:ANR.x $Global:ANXML.ArkNights.base.order.amount.$Global:ANR.y $Global:ANXML.ArkNights.base.order.amount.$Global:ANR.w $Global:ANXML.ArkNights.base.order.amount.$Global:ANR.h 'anhn' '111' | out-null
-		
-		If( ($order_list_amount = cat "$($env:TEMP)\ocrword.txt" -Encoding UTF8 -Raw) -imatch "^\d{1,2}/"){ # 获取订单个数 # 10/11
-			$order_list_amount = $order_list_amount.Split('/')[0]
-		}else{
-			$order_list_amount = 11 # 使用默认数量 11
-		}
-		
-		$to_left = $Global:ANXML.ArkNights.base.order.clickget.$Global:ANR.x
-		$to_top = $Global:ANXML.ArkNights.base.order.clickget.$Global:ANR.y
-		
-		1 .. $order_list_amount|%{adb_server shell input tap $to_left $to_top ; sleep 1 } # 9 <--------  收取订单
-		
-		If( $UseDrone ){ # 10 <--------  使用无人机
-			adb_server shell input tap $Global:ANXML.ArkNights.base.order.drone.cancel.$Global:ANR.x $Global:ANXML.ArkNights.base.order.drone.cancel.$Global:ANR.y; sleep 1
-			
-			1..3|%{
-				adb_server shell input tap $to_left $to_top ; sleep 1 # 点击无人协助
-				adb_server shell input tap $Global:ANXML.ArkNights.base.order.drone.clickmost.$Global:ANR.x $Global:ANXML.ArkNights.base.order.drone.clickmost.$Global:ANR.y; sleep 1 # 点击最多
-				adb_server shell input tap $Global:ANXML.ArkNights.base.order.drone.confirm.$Global:ANR.x $Global:ANXML.ArkNights.base.order.drone.confirm.$Global:ANR.y; sleep 2 # 点击确认
-				adb_server shell input tap $to_left $to_top ; sleep 1 # 点击收取
-			}
-			adb_server shell input tap $Global:ANXML.ArkNights.base.order.drone.cancel.$Global:ANR.x $Global:ANXML.ArkNights.base.order.drone.cancel.$Global:ANR.y; sleep 1
-		}
-	
-		1..2  | %{ adb_server shell input tap 140 65 ; sleep 1 } # 11 <------------------------- 离开贸易站
-	}
 }
+
 # SIG # Begin signature block
 # MIIFmwYJKoZIhvcNAQcCoIIFjDCCBYgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

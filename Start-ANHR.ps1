@@ -31,7 +31,7 @@ Function Start-ANHR(){
 			1..8 | %{  # 点击 "skip"
 				adb_server.exe shell input tap $Global:ANXML.ArkNights.hr.skip.$Global:ANR.x $Global:ANXML.ArkNights.hr.skip.$Global:ANR.y ; sleep -Milliseconds 500  
 			}
-			
+		}	
 			# 第一次招募干员的时候 检测还剩多少 招聘许可书
 			If( !$is_recruit_permit_amount_checked -or $recruit_permit_amount -gt 0){
 				adb_server.exe shell input tap $cx $cy ; sleep 1 # 点击 "开始招募干员"
@@ -58,7 +58,7 @@ Function Start-ANHR(){
 				write-warning "No enough recruit permit"
 				return
 			}
-		}
+		# }
 	}
 }
 
