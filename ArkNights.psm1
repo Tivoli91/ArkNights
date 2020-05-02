@@ -139,6 +139,14 @@ Function Start-ANTaskLoopWithReasonCheck(){
 	}
 }
 
+Function Test-ANDelegate(){
+    New-ANScreenShot
+	If( Test-ANWordExist $Global:ANXML.ArkNights.combat.start.maneuver.$Global:ANR.x $Global:ANXML.ArkNights.combat.start.maneuver.$Global:ANR.y $Global:ANXML.ArkNights.combat.start.maneuver.$Global:ANR.w $Global:ANXML.ArkNights.combat.start.maneuver.$Global:ANR.h 'eng' '45108' ){ # -l
+		return $false
+	}
+	return $true
+}
+
 #endregion internal functions
 
 Export-ModuleMember -Function * -Cmdlet *

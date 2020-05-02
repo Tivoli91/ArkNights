@@ -6,7 +6,16 @@ Function Start-ANTaskLoop(){
 	    [int]$ignore_x=$Global:ANXML.ArkNights.combat.ignorelevelup.$Global:ANR.x,
 	    [int]$ignore_y=$Global:ANXML.ArkNights.combat.ignorelevelup.$Global:ANR.y
 	)
-    $x,$y=$Global:ANXML.ArkNights.combat.start.$Global:ANR.x,$Global:ANXML.ArkNights.combat.start.$Global:ANR.y
+    
+	If(!(Test-ANDelegate)){
+		# 发现“代理指挥”没有勾选✔，尝试点击 “代理指挥”
+		adb_server shell input tap $Global:ANXML.ArkNights.combat.start.delegate.$Global:ANR.x $Global:ANXML.ArkNights.combat.start.delegate.$Global:ANR.y
+		# 再次检测“代理指挥”有没有被勾选， 如果没有通关过，这里是锁上的
+		If(!(Test-ANDelegate)){
+			throw "无法代理指挥，请确保你已三星通过此关"
+		}
+	}
+	$x,$y=$Global:ANXML.ArkNights.combat.start.$Global:ANR.x,$Global:ANXML.ArkNights.combat.start.$Global:ANR.y
 	$start_cnt .. $end_cnt|%{
 		write-host "loop count $_"
 		adb_server shell input tap $x $y ; sleep 2 # 点击 开始行动， 进入编队页面
