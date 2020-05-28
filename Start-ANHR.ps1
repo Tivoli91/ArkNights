@@ -38,7 +38,7 @@ Function Start-ANHR(){
 				# 后期考虑OCR识别高资干员选项
 				New-ANScreenShot "$($env:TEMP)\ocr_hr.jpg"
 				Test-ANWordExist $Global:ANXML.ArkNights.hr.rect.recruitpermitamount.$Global:ANR.x $Global:ANXML.ArkNights.hr.rect.recruitpermitamount.$Global:ANR.y $Global:ANXML.ArkNights.hr.rect.recruitpermitamount.$Global:ANR.w $Global:ANXML.ArkNights.hr.rect.recruitpermitamount.$Global:ANR.h 'anhn' '123' "$($env:TEMP)\ocr_hr.jpg"|out-null
-				If( ($recruit_permit_amount = cat "$($env:TEMP)\ocrword.txt" -Encoding UTF8 -Raw) -imatch "^\d{1,2}/"){ # 获取招聘许可书个数 # example: 16/1
+				If( ($recruit_permit_amount = cat "$($env:TEMP)\ocrword.txt" -Encoding UTF8 -Raw) -imatch "^\d{1,}"){ # 获取招聘许可书个数 # example: 16/1
 					$recruit_permit_amount = $recruit_permit_amount.Split('/')[0]
 					$is_recruit_permit_amount_checked = $true
 				}else{

@@ -23,7 +23,8 @@ Function Connect-ArkNights([switch]$reconnect){
 	Do{
 	    $connect_result = adb_server connect '127.0.0.1:7555'
 		Switch -regex ($connect_result){
-		    "connected"{ break out_loop} # $connect_result ; 
+			"connected"{ break out_loop} # $connect_result ; 
+			"empty host name"{ adb_server kill-server ; adb_server start-server}
 		    # "unable to connect"{sleep 2 ; break}
 		    default{sleep 2}
 		}
@@ -93,11 +94,16 @@ Function Connect-ArkNights([switch]$reconnect){
 			$start_time=get-date
 			Do{ # 检测 正下方黄色 "START" 字符串
 				New-ANScreenShot
-				If( Test-ANWordExist $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.x $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.y $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.w $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.h 'eng' '8384658284'){
-					break
-			    }
-				If( ((get-date) - $start_time).Seconds -gt 59){
-					throw "Timeout(60s) to find success loading page!" ; return
+				Try{
+					If( Test-ANWordExist $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.x $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.y $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.w $Global:ANXML.ArkNights.login.loadingpage.$Global:ANR.h 'eng' '8384658284'){
+						break
+					}
+					If( ((get-date) - $start_time).Seconds -gt 59){
+						throw "Timeout(60s) to find success loading page!" ; return
+					}
+				}Catch{
+					sleep 1
+				}Finally{
 				}
 			}While( $true )
 			adb_server shell input tap 500 500 # 点击任一点进入登录界面（我这里随便取了一个坐标）
