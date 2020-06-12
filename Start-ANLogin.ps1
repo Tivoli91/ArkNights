@@ -24,8 +24,10 @@ Function Start-ANLogin([switch]$SkipLoginPageCheck){
 		adb_server shell input tap $Global:ANXML.ArkNights.login.accountmanage.$Global:ANR.x $Global:ANXML.ArkNights.login.accountmanage.$Global:ANR.y ; sleep 2 # 账号管理
 	}
 	adb_server shell input tap $Global:ANXML.ArkNights.login.accountlogin.$Global:ANR.x $Global:ANXML.ArkNights.login.accountlogin.$Global:ANR.y     ; sleep 2 # 账号登录
+	
 	adb_server shell input tap $Global:ANXML.ArkNights.login.password.$Global:ANR.x $Global:ANXML.ArkNights.login.password.$Global:ANR.y             ; sleep 2 # 密码输入框
 	Try{
+		
 		adb_server shell input text ([Runtime.InteropServices.Marshal]::PtrToStringAuto( [Runtime.InteropServices.Marshal]::SecureStringToBSTR((ConvertTo-SecureString $cred))))  # 输入密码
 	}Catch{
 		throw $_
