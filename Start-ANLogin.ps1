@@ -36,7 +36,7 @@ Function Start-ANLogin([switch]$SkipLoginPageCheck){
 		adb_server shell input tap $Global:ANXML.ArkNights.login.loginclick.$Global:ANR.x $Global:ANXML.ArkNights.login.loginclick.$Global:ANR.y ; sleep 1 # 登录
 		adb_server shell input tap $Global:ANXML.ArkNights.login.loginclick.$Global:ANR.x $Global:ANXML.ArkNights.login.loginclick.$Global:ANR.y ; sleep 1 # 登录
 	}
-	1..10|%{ 
+	1..15|%{ 
 		sleep -Milliseconds 500 ; adb_server shell input tap $Global:ANXML.ArkNights.login.activity.$Global:ANR.x $Global:ANXML.ArkNights.login.activity.$Global:ANR.y # 每日登陆活动,领取等弹窗
 	}
 }

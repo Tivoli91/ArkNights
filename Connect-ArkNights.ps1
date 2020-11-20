@@ -33,6 +33,11 @@ Function Connect-ArkNights([switch]$reconnect){
 		}
 	}While( $true )
 	
+	#貌似长时间连接会断开，所以加了一个后台定时(半小时)连接的事件
+	if (!(Get-Job|?{$_.Command -imatch "adb_server connect"})) {
+		Start-Job {do {sleep 1800 ; if(ps NemuPlayer -ea 4){adb_server connect '127.0.0.1:7555'}} while (1)}|out-null
+	}
+
 	write-host "3. 查看安卓模拟器分辨率"
 	# 3. 查看安卓模拟器分辨率
 	$cnt=0
@@ -82,6 +87,9 @@ Function Connect-ArkNights([switch]$reconnect){
 			# 点击 “游戏”
 			# adb_server shell input tap $root_node.game.$Global:ANR.x $root_node.game.$Global:ANR.y
 			adb_server shell input tap 105 290
+			
+			# 向下滑动到“退出该账号”显示出来
+			adb_server shell input swipe 1000 500 500 200 ; sleep 2
 			# 点击 “退出该账号”
 			adb_server shell input tap $root_node.game.exit.$Global:ANR.x $root_node.game.exit.$Global:ANR.y ; sleep 1
 			# 点击 "✔"确认退出
