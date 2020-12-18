@@ -81,19 +81,24 @@ Function Connect-ArkNights([switch]$reconnect){
 			write-host '4.2 已在主界面，开始重新登录'
 			# 目前脚本没法是否是手机之后登录了，但是模拟器的主界面窗口还在，所以这里直接退出重新登陆
 			$root_node = $Global:ANXML.ArkNights.relogin.setting
-			# 点击 “设置”
+
+			write-host '4.2.1 点击 “设置”'
 			# adb_server shell input tap $root_node.$Global:ANR.x $root_node.$Global:ANR.y ; sleep 1
-			adb_server shell input tap 100 100 ; sleep 1
-			# 点击 “游戏”
+			adb_server shell input tap 100 100 ; sleep 2
+			
+			write-host '4.2.1 点击 “账户”'
 			# adb_server shell input tap $root_node.game.$Global:ANR.x $root_node.game.$Global:ANR.y
-			adb_server shell input tap 105 290
+			adb_server shell input tap 354 322 ; sleep 2
 			
 			# 向下滑动到“退出该账号”显示出来
-			adb_server shell input swipe 1000 500 500 200 ; sleep 2
-			# 点击 “退出该账号”
+			# adb_server shell input swipe 1000 500 500 200 ; sleep 2
+
+			write-host '4.2.1 点击 “退出”'
 			adb_server shell input tap $root_node.game.exit.$Global:ANR.x $root_node.game.exit.$Global:ANR.y ; sleep 1
-			# 点击 "✔"确认退出
+			
+			write-host '4.2.1 点击 "✔"确认退出'
 			adb_server shell input tap $root_node.game.exit.confirm.$Global:ANR.x $root_node.game.exit.confirm.$Global:ANR.y
+			
 		}else{
 			# 未发现正在运行的明日方舟程序， 尝试启动
 			write-host '4.1 未发现正在运行的明日方舟程序， 尝试启动'
