@@ -1,0 +1,53 @@
+
+Function Enter-LeftMouse(){
+    $signature=@' 
+        [DllImport("user32.dll",CharSet=CharSet.Auto, CallingConvention=CallingConvention.StdCall)]
+        public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+'@ 
+	$SendMouseClick = Add-Type -memberDefinition $signature -name "Win32MouseEventNew" -namespace Win32Functions -passThru 
+	$SendMouseClick::mouse_event(0x00000002, 0, 0, 0, 0); #0x00000002 corresponds to a left-mouse-down move
+	$SendMouseClick::mouse_event(0x00000004, 0, 0, 0, 0); #0x00000004 corresponds to a left-mouse-up move   
+}
+sleep 3 ;  Enter-LeftMouse
+
+PS D:\SPPS1> adb_server.exe shell wm size
+Physical size: 2560x1440
+
+ 
+
+
+New-ANScreenShot d:\temp\test.png ; ii d:\temp\test.png
+New-CropImage 1690 35 200 50 d:\temp\test.png  d:\temp\test1.png ; ii d:\temp\test1.png
+Test-OCRWord d:\temp\test1.png eng 807669658369 ; cat "$($env:TEMP)\ocrword.txt" -Encoding UTF8
+
+Connect-ArkNights
+
+Start-ANHR
+Start-ANFriendVisit
+Start-ANSourceCollect -UseDrone
+Start-ANTicketCollect -times 8 -AutoAddReason
+
+Start-ANTaskLoop 1 1 150
+Start-ANTaskCollect
+Start-ANLogin
+
+
+rmo OCRUtility ; ipmo OCRUtility
+rmo ArkNights ; ipmo ArkNights
+
+
+
+New-ANScreenShot d:\temp\test.png ; ii d:\temp\test.png
+New-CropImage 2095 1345 (2225 - 2095) (1380 - 1345) d:\temp\test.png  d:\temp\test1.png ; ii d:\temp\test1.png
+Test-OCRWord d:\temp\test1.png eng 807669658369 ; cat "$($env:TEMP)\ocrword.txt" -Encoding UTF8
+tesseract.exe d:\temp\test1.png d:\temp\test --psm 7 -l chi_sim #2>$null # ans anh eng chi_sim
+cat d:\temp\test.txt -Encoding UTF8
+('用户协议'.ToCharArray()|%{[int]$_}) -join ""
+
+
+
+
+adb_server shell ps|?{$_ -imatch "com.hypergryph.arknights"} # check process
+adb_server shell dumpsys window windows | findstr “Current” # check current running status
+adb_server shell am start -n com.hypergryph.arknights/com.u8.sdk.U8UnityContext
+adb_server shell am force-stop com.hypergryph.arknights #/com.u8.sdk.U8UnityContext

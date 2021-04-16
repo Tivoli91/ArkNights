@@ -6,6 +6,10 @@ Function Start-ANTaskCollect(){ # 建议在一天的后面再来跑这个函数
 		[switch]$AlreadyInTaskPage
 	)
     Function New-TaskFinishLoop($x,$y){ 
+		1 .. 40| %{ # 连续点击15次, 领取任务
+			adb_server shell input tap $Global:ANXML.ArkNights.taskcollect.clickget.$Global:ANR.x $Global:ANXML.ArkNights.taskcollect.clickget.$Global:ANR.y ; sleep -Milliseconds (300..500|Get-Random)
+		}
+		return
 		1..2 |%{adb_server shell input tap $x $y ; sleep -Milliseconds 500} # 多点一次, 防止上次卡在领取任务报酬的界面
 
 		Get-ANPartScreenshot $Global:ANXML.ArkNights.taskcollect.rect.main.$Global:ANR.x $Global:ANXML.ArkNights.taskcollect.rect.main.$Global:ANR.y $Global:ANXML.ArkNights.taskcollect.rect.main.$Global:ANR.w $Global:ANXML.ArkNights.taskcollect.rect.main.$Global:ANR.h # 截取模拟器部分屏幕

@@ -48,9 +48,7 @@ Function Start-ANHR(){
 			}
 			
 			If( $recruit_permit_amount -gt 0 ){
-				1..9 | %{ # 加到9个小时
-					adb_server.exe shell input tap $Global:ANXML.ArkNights.hr.addtime.$Global:ANR.x $Global:ANXML.ArkNights.hr.addtime.$Global:ANR.y
-				}
+				adb_server.exe shell input tap $Global:ANXML.ArkNights.hr.addtime.$Global:ANR.x $Global:ANXML.ArkNights.hr.addtime.$Global:ANR.y
 				adb_server.exe shell input tap $Global:ANXML.ArkNights.hr.hiretick.$Global:ANR.x $Global:ANXML.ArkNights.hr.hiretick.$Global:ANR.y ;  sleep 2 # 点击√开始招募
 				$need_cancel = $false
 				([int]$recruit_permit_amount)--  # 招聘许可书 数量减一
